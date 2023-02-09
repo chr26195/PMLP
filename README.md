@@ -34,6 +34,3 @@ If you find our codes useful, please consider citing our work
       year = {2023}
       }
 ```
-
-### ACK
-The pipeline for training and preprocessing is developed on basis of the Non-Homophilous Benchmark project.
