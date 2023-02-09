@@ -27,10 +27,10 @@ python main.py --dataset cora --method pmlp_gcn --protocol semi --lr 0.1 --weigh
 ### Citation
 If you find our codes useful, please consider citing our work
 ```bibtex
-      @inproceedings{yang2023geometric,
-      title = {Geometric Knowledge Distillation: Topology Compression for Graph Neural Networks},
-      author = {Chenxiao Yang and Qitian Wu and Junchi Yan},
-      booktitle = {Inter (NeurIPS)},
+      @inproceedings{yang2023pmlp,
+      title = {GGraph Neural Networks are Inherently Good Generalizers: Insights by Bridging GNNs and MLPs},
+      author = {Chenxiao Yang and Qitian Wu and Jiahua Wang and Junchi Yan},
+      booktitle = {International Conference on Learning Representation (ICLR)},
       year = {2023}
       }
 ```
