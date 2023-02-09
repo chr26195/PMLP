@@ -30,7 +30,7 @@ If you find our codes useful, please consider citing our work
       @inproceedings{yang2023pmlp,
       title = {Graph Neural Networks are Inherently Good Generalizers: Insights by Bridging GNNs and MLPs},
       author = {Chenxiao Yang and Qitian Wu and Jiahua Wang and Junchi Yan},
-      booktitle = {International Conference on Learning Representation (ICLR)},
+      booktitle = {International Conference on Learning Representations (ICLR)},
       year = {2023}
       }
 ```
