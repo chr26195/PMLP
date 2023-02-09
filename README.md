@@ -28,7 +28,7 @@ python main.py --dataset cora --method pmlp_gcn --protocol semi --lr 0.1 --weigh
 If you find our codes useful, please consider citing our work
 ```bibtex
       @inproceedings{yang2023pmlp,
-      title = {GGraph Neural Networks are Inherently Good Generalizers: Insights by Bridging GNNs and MLPs},
+      title = {Graph Neural Networks are Inherently Good Generalizers: Insights by Bridging GNNs and MLPs},
       author = {Chenxiao Yang and Qitian Wu and Jiahua Wang and Junchi Yan},
       booktitle = {International Conference on Learning Representation (ICLR)},
       year = {2023}
