@@ -139,26 +139,9 @@ for run in range(args.runs):
             loss = criterion(out[train_idx], true_label.squeeze(1)[train_idx].to(torch.float))
         
         else:
-            # Generate pseudo labels for unlabeled nodes via label propagation as a potential approach for extending to transductive learning setting
-            # Ignore this part for reproducing main results in the paper
-            if args.conv_tr == False and args.conv_te == True and args.trans == True:
-                out_prob = F.softmax(out, dim=1)
-                true_label = F.one_hot(dataset.label, dataset.label.max() + 1).squeeze(1).to(torch.float)
-                train_mask = torch.zeros(out.shape[0]).bool().to(device)
-                train_mask[train_idx] = True
-
-                pseudo_label = torch.empty_like(true_label)
-                pseudo_label[train_mask] = true_label[train_mask]
-                pseudo_label[~train_mask] = out_prob[~train_mask].detach()
-                pseudo_label[~train_mask] = gcn_conv(pseudo_label, dataset.graph['edge_index'])[~train_mask]
-                
-                pseudo_label[~train_mask] = pseudo_label[~train_mask] / pseudo_label[~train_mask].sum(dim=-1, keepdim=True)
-                loss = nn.KLDivLoss(reduction='batchmean')(F.log_softmax(out, dim=1), pseudo_label)
-            # Default loss for training
-            else:
-                out = F.log_softmax(out, dim=1)
-                true_label = F.one_hot(dataset.label, dataset.label.max() + 1).squeeze(1).to(torch.float)
-                loss = nn.KLDivLoss(reduction='batchmean')(out[train_idx], true_label[train_idx])
+            out = F.log_softmax(out, dim=1)
+            true_label = F.one_hot(dataset.label, dataset.label.max() + 1).squeeze(1).to(torch.float)
+            loss = nn.KLDivLoss(reduction='batchmean')(out[train_idx], true_label[train_idx])
 
         loss.backward()
         optimizer.step()
