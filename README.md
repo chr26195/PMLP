@@ -13,7 +13,7 @@ Related materials:
 [2023.02.09] We release the early version of our codes for reproducibility (more detailed info will be updated soon).
 
 ## 0. What can I do with PMLP?
-* Accelerate GNN training by modifying only a few lines of codes in your own pipeline (see Quick Guide).
+* Accelerate GNN training by modifying only a few lines of codes (see Quick Guide).
 * Empower your MLP (or any other backbone models) by incorporating message passing / graph convolution in inference.
 * Empower your GNN in some scenarios, e.g., datasets with many noisy structures, inductive learning setting.
 * Simple and useful tool for research and scientific discovery.
@@ -21,8 +21,8 @@ Related materials:
 
 ## 1. Quick Guide
 
-### 1.1. PMLP Implementation Version 1 (Default)
-The implementation of PMLP is very simple, and can be plugged into your own pipeline by modifying only a few lines of codes. The key part of our implementation is to add a `use_conv = True/False` parameter in the `self.forward()` function for any GNN classes. This parameter is set to be `False` in training and validation, and reset to be `True` in testing. For example:
+### 1.1. Version A: Default PMLP Implementation
+The implementation of PMLP is very simple, and can be plugged into your own pipeline by modifying only a few lines of codes. The key part of this implementation is to add a `use_conv = True/False` parameter in the `self.forward()` function for any GNN classes. This parameter is set to be `False` in training and validation, and reset to be `True` in testing. For example:
 
 ``` python
 # version 1
@@ -48,10 +48,10 @@ my_own_gnn.eval()
 prediction = my_own_gnn(x, edge, use_conv = True)
 ```
 
-If `use_conv` is `True` is both training and testing, the model is equivalent to the original GNN. And if `use_conv` is `False` is both training and testing, the model is equivalent to MLP (or other models depending on the specific GNN implementation).
+This implementation is very flexible: If `use_conv` is `True` is both training and testing, the model is equivalent to the original GNN. And if `use_conv` is `False` is both training and testing, the model is equivalent to MLP (or other 'backbone' models).
 
-### 1.2. PMLP Implementation Version 2 (Simpler)
-Here is an alternative way of implemention that only requires modifying one line of code in your pipeline. This version leverages the (PyTorch) built-in parameter `training` to automatically specify when to use graph convolution.
+### 1.2. Version B: One Line to Implement PMLP
+Here is the most simple way to implement PMLP, which leverages the (PyTorch) built-in parameter `self.training` to automatically specify when to use graph convolution.
 
 ``` python
 # version 2
@@ -60,7 +60,7 @@ class My_Own_GNN(nn.Module):
     def forward(self, x, edge_index):
         ...
         x = self.feed_forward_layer(x) 
-        if not self.training: # modified part
+        if not self.training: # only modified part
             x = self.message_passing_layer(x, edge_index)  
         ...
         return x
