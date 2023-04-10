@@ -28,9 +28,22 @@ class My_Own_GNN(nn.Module):
             x = self.message_passing_layer(x, edge_index)  
         ...
         return x
+
+my_own_gnn = My_Own_GNN()
+
+# in the training loop
+my_own_gnn.train()
+for epoch in range(args.epochs):
+    prediction = my_own_gnn(x, edge, use_conv = False)
+
+# for inference
+my_own_gnn.eval()
+prediction = my_own_gnn(x, edge, use_conv = True)
 ```
 
-Here is an alternative implemention that leverages the (PyTorch) built-in parameter `training`, which is even simpler but lacks flexibility:
+If `use_conv` is `True` is both training and testing, the model is equivalent to the original GNN. And if `use_conv` is `False` is both training and testing, the model is equivalent to MLP (or other models depending on the specific GNN implementation).
+
+Here is an alternative implemention that leverages the (PyTorch) built-in parameter `training`, which lacks flexibility but is even simpler by avoiding `use_conv` parameter:
 
 ``` python
 # version 2
@@ -43,8 +56,19 @@ class My_Own_GNN(nn.Module):
             x = self.message_passing_layer(x, edge_index)  
         ...
         return x
+
+# in the training loop
+my_own_gnn.train()
+for epoch in range(args.epochs):
+    prediction = my_own_gnn(x, edge)
+
+# for inference
+my_own_gnn.eval()
+prediction = my_own_gnn(x, edge)
 ```
 
+### Potential extensions
+(to be written)
 
 ## Run the Code
 1. Install the required package according to `requirements.txt`.
