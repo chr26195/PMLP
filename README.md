@@ -65,6 +65,8 @@ class My_Own_GNN(nn.Module):
         ...
         return x
 
+my_own_gnn = My_Own_GNN()
+
 my_own_gnn.train()
 for epoch in range(args.epochs):
     prediction = my_own_gnn(x, edge)
