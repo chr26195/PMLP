@@ -8,13 +8,45 @@ Related materials:
 <img src="materials/illustration.png" width="900">
 
 ### What's news
-[2023.04.11] We upload the (conference version) slide and add a "Guidance for Implementing PMLP" for quick start with our PMLP model.
+[2023.04.11] We upload the (conference version) slide and add a "Quick Guidance" section summarizing key points in implementations.
+
 [2023.02.09] We release the early version of our codes for reproducibility (more detailed info will be updated soon).
 
-### Guidance for Implementing PMLP
-The implementation of PMLP is very simple and can be adapted to your own pipeline with only a few lines of code. The key 
+## Quick Guidance
 
-### Use the Code
+### Basic implementation of PMLP
+The implementation of PMLP is very simple, and can be plugged into your own pipeline by modifying only a few lines of codes. The key part of our implementation is to add a `use_conv = True/False` parameter in the `self.forward()` function for any GNN classes. This parameter is set to be `False` in training and validation, and reset to be `True` in testing. For example:
+
+``` python
+# version 1
+class My_Own_GNN(nn.Module):
+    ...
+    def forward(self, x, edge_index, use_conv = True):
+        ...
+        x = self.feed_forward_layer(x) 
+        if use_conv: 
+            x = self.message_passing_layer(x, edge_index)  
+        ...
+        return x
+```
+
+Here is an alternative implemention that leverages the (PyTorch) built-in parameter `training`, which is even simpler but lacks flexibility:
+
+``` python
+# version 2
+class My_Own_GNN(nn.Module):
+    ...
+    def forward(self, x, edge_index):
+        ...
+        x = self.feed_forward_layer(x) 
+        if not self.training: 
+            x = self.message_passing_layer(x, edge_index)  
+        ...
+        return x
+```
+
+
+## Run the Code
 1. Install the required package according to `requirements.txt`.
 2. Specify your own data path in `parse.py` and download the datasets.
 3. To run the training and evaluation on eight datasets we used, one can use the following scripts.
@@ -31,8 +63,8 @@ python main.py --dataset cora --method pmlp_gcn --protocol semi --lr 0.1 --weigh
 python main.py --dataset cora --method pmlp_gcn --protocol semi --lr 0.1 --weight_decay 0.01 --dropout 0.5 --num_layers 2 --hidden_channels 64 --induc --device 0
 ```
 
-### Citation
-If you find our codes useful, please consider citing our work
+## Citation
+If you are inspired by the paper or code, please consider citing our work
 ```bibtex
 @inproceedings{yang2023pmlp,
 title = {Graph Neural Networks are Inherently Good Generalizers: Insights by Bridging GNNs and MLPs},

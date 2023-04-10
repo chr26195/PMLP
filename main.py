@@ -146,8 +146,8 @@ for run in range(args.runs):
         loss.backward()
         optimizer.step()
         train_time = time.time() - train_start
-        train_mem = get_gpu_memory_map()[int(args.device)]
-        train_mems.append(train_mem)
+        # train_mem = get_gpu_memory_map()[int(args.device)]
+        # train_mems.append(train_mem)
         train_times.append(train_time)
 
         result = evaluate(model, dataset, split_idx, eval_func, criterion, args)
@@ -173,7 +173,7 @@ for run in range(args.runs):
 
 results = logger.print_statistics()
 train_time = sum(train_times) / len(train_times)
-train_mem = sum(train_mems) / len(train_mems)
+# train_mem = sum(train_mems) / len(train_mems)
 para_num = count_parameters(model)
 
 ### Save results ###
@@ -182,5 +182,5 @@ print(f"Saving results to {filename}")
 with open(f"{filename}", 'a+') as write_obj:
     dataset_str = f'{args.dataset}'
     dataset_str += f'{args.sub_dataset},' if args.sub_dataset else ''
-    write_obj.write(f"method{args.train_prop if args.rand_split else ''}:{args.method}(trans:{args.trans},cv_tr:{args.conv_tr},cv_va:{args.conv_va},cv_te:{args.conv_te}),\t lr:{args.lr},\t wd:{args.weight_decay},\t dpo:{args.dropout},\t l:{args.num_layers},\t o:{args.num_mps},\t hc:{args.hidden_channels},\t performance: {results.mean():.2f} $\pm$ {results.std():.2f},\t train time:{train_time: .6f},\t train_mem:{train_mem: .2f},\t para_num:{para_num: .2f}\n")
+    write_obj.write(f"method{args.train_prop if args.rand_split else ''}:{args.method}(trans:{args.trans},cv_tr:{args.conv_tr},cv_va:{args.conv_va},cv_te:{args.conv_te}),\t lr:{args.lr},\t wd:{args.weight_decay},\t dpo:{args.dropout},\t l:{args.num_layers},\t o:{args.num_mps},\t hc:{args.hidden_channels},\t performance: {results.mean():.2f} $\pm$ {results.std():.2f},\t train time:{train_time: .6f},\t para_num:{para_num: .2f}\n")
                     
