@@ -68,7 +68,7 @@ prediction = my_own_gnn(x, edge)
 ```
 
 ### Potential extensions
-(to be written)
+(coming soon)
 
 ## Run the Code
 1. Install the required package according to `requirements.txt`.
