@@ -5,9 +5,14 @@ This is the official code repository for "Graph Neural Networks are Inherently G
 Related materials: 
 [paper](https://arxiv.org/pdf/2212.09034.pdf), [slides](https://github.com/chr26195/PMLP/blob/main/materials/silde_conference_version.pdf)
 
-### What's news
+<img src="materials/illustration.png" width="900">
 
+### What's news
+[2023.04.11] We upload the (conference version) slide and add a "Guidance for Implementing PMLP" for quick start with our PMLP model.
 [2023.02.09] We release the early version of our codes for reproducibility (more detailed info will be updated soon).
+
+### Guidance for Implementing PMLP
+The implementation of PMLP is very simple and can be adapted to your own pipeline with only a few lines of code. The key 
 
 ### Use the Code
 1. Install the required package according to `requirements.txt`.
