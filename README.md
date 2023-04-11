@@ -71,11 +71,11 @@ my_own_gnn = My_Own_GNN()
 # in the training loop
 my_own_gnn.train()
 for epoch in range(args.epochs):
-    prediction = my_own_gnn(x, edge)
+    prediction = my_own_gnn(x, edges)
 
 # for inference
 my_own_gnn.eval()
-prediction = my_own_gnn(x, edge)
+prediction = my_own_gnn(x, edges)
 ```
 
 ### 1.3. Version C: Just Drop All Edges (But Leave Self-Loops Alone)
