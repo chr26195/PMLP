@@ -20,7 +20,7 @@ Related materials:
 
 
 ## 1. Quick Guide
-The implementation of PMLP is very simple, and can be plugged into your own pipeline by modifying only a few lines of codes. The key idea of PMLP is to just remove message passing modules in training for acceleration and scientific discovery. We allow the counterpart model after ablation to be any models besides of MLP, such as ResNet (corresponding to GCNII) and MLP+JK (corresponding to JKNet). Here we introduce several different ways to implement PMLP.
+The implementation of PMLP is very simple, and can be plugged into your own pipeline by modifying only a few lines of codes. The key idea of PMLP is to just remove message passing modules in GNNs during the training process. We allow the counterpart model after removal to be any models besides of MLP, such as ResNet (corresponding to GCNII) and MLP+JK (corresponding to JKNet). Here we introduce several different ways to implement PMLP and discuss their advantages and limitations.
 
 ### 1.1. Version A: Three Models (MLP / PMLP / GNN) in One Class
 This is the default way to implement PMLP, which combines three models (MLP, PMLP, GNN) in one single class. The key part of this implementation is to add a `use_conv = True/False` parameter in the `self.forward()` function for any GNN classes. To implement PMLP, just set this parameter to be `False` in training and validation, and then reset it to be `True` in testing. For example:
