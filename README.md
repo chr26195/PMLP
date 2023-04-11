@@ -12,10 +12,10 @@ Related materials:
 
 [2023.02.09] We release the early version of our codes for reproducibility (more detailed info will be updated soon).
 
-## 0. What can I do with PMLP?
-* Accelerate GNN training by modifying only a few lines of codes (see Quick Guide).
+## 0. What Could I Do with PMLP?
+* Accelerate GNN training by modifying only a few lines of codes.
 * Empower your MLP (or any other backbone models) by incorporating message passing / graph convolution in inference.
-* Empower your GNN in some scenarios, e.g., datasets with many noisy structures, inductive learning setting.
+* Empower your GNN in some scenarios, e.g., datasets with many noisy structures.
 * Simple and useful tool for research and scientific discovery.
 
 
