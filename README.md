@@ -14,16 +14,16 @@ Related materials:
 
 ## 0. What Could I Do with PMLP?
 * Accelerate GNN training by modifying only a few lines of codes.
-* Empower your MLP (or any other backbone models) by incorporating message passing / graph convolution in inference.
-* Empower your GNN in some scenarios, e.g., datasets with many noisy structures.
+* Empower MLP (or any other backbone models) by incorporating message passing / graph convolution in inference.
+* Empower GNN in some scenarios, e.g., datasets with many noisy structures.
 * Simple and useful tool for research and scientific discovery.
 
 
 ## 1. Quick Guide
-The implementation of PMLP is very simple, and can be plugged into your own pipeline by modifying only a few lines of codes. The key idea of PMLP is to just remove message passing modules in GNNs during the training process. We allow the counterpart model after removal to be any models besides of MLP, such as ResNet (corresponding to GCNII) and MLP+JK (corresponding to JKNet). Here we introduce several different ways to implement PMLP and discuss their advantages and limitations.
+The implementation of PMLP is very simple, and can be plugged into one's own pipeline by modifying only a few lines of codes. The key idea of PMLP is to just remove message passing modules in GNNs during the training process. We allow the counterpart model after removal to be any model besides of MLP, such as ResNet (corresponding to GCNII) and MLP+JK (corresponding to JKNet). Here we introduce several different ways to implement PMLP and discuss their advantages and limitations.
 
 ### 1.1. Version A: Three Models (MLP / PMLP / GNN) in One Class
-This is the default way to implement PMLP, which combines three models (MLP, PMLP, GNN) in one single class. The key part of this implementation is to add a `use_conv = True/False` parameter in the `self.forward()` function for any GNN classes. To implement PMLP, just set this parameter to be `False` in training and validation, and then reset it to be `True` in testing. For example:
+This is the default way and go-to choice to implement PMLP, which combines three models (MLP, PMLP, GNN) in one single class. The key idea of this implementation is to add a `use_conv = True/False` parameter in the `self.forward()` function for any GNN classes. To implement PMLP, just set this parameter to be `False` in training and validation, and then reset it to be `True` in testing. For example:
 
 ``` python
 # version A: three models (mlp, pmlp, gnn) in one class
@@ -49,10 +49,10 @@ my_own_gnn.eval()
 prediction = my_own_gnn(x, edge, use_conv = True)
 ```
 
-This implementation is very flexible. If `use_conv = True` is both training and testing, the model is equivalent to the original GNN. And if `use_conv = False` is both training and testing, the model is equivalent to the original MLP (or other 'backbone' models). One can optionally let `use_conv = True` for validation by modifying the `evaluate()` function in `data_utils.py`, which could lead to better or worse performance depending on the specific task and can be treated as a hyperparameter to tune in practice. Many extensions of PMLP can be developed using this implementation, which will be specified later.
+This implementation is very flexible. If `use_conv = True` is both training and testing, the model is equivalent to the original GNN. And if `use_conv = False` is both training and testing, the model is equivalent to the original MLP (or other 'backbone' models). One can optionally let `use_conv = True` for validation by modifying the `evaluate()` function in `data_utils.py`, which could lead to better or worse performance depending on the specific task and could be treated as a hyperparameter to tune. In default, we do not use message passing in validation such that the model selection process of PMLP is also equivalent to MLP. Many extensions of PMLP can be developed upon this implementation to further boost performance or adapt to new tasks, which will be specified later.
 
 ### 1.2. Version B: One Line of Code is All You Need
-Here is the most simple way to implement PMLP, which only requires modifying only one line of code in your own pipeline. This implementation leverages the (PyTorch) built-in parameter `self.training` to automatically specify when to use graph convolution.
+Here is the most simple way to implement PMLP, which only requires modifying only one line of code in your own GNN pipeline. This implementation leverages the (PyTorch) built-in parameter `self.training` to automatically specify when to use graph convolution.
 
 ``` python
 # version B: one line of code is all you need
@@ -78,7 +78,7 @@ my_own_gnn.eval()
 prediction = my_own_gnn(x, edges)
 ```
 
-One limitation of this implementation is that it enforces using message passing (i.e., the GNN architecture) for validation (since usually we use `model.eval()` before validation). In most scenarios, this is acceptable because validation is not the bottleneck of training efficiency and sometimes using GNN architecture for validation can bring some performance improvements. 
+One limitation of this implementation is that it enforces using message passing (i.e., the GNN architecture) for validation (since usually we use `model.eval()` before validation and `self.training` is automatically set to be `False`). However, this is totally acceptable in most scenarios since validation is not the bottleneck of training efficiency and using message passing in validation often improves performance. 
 
 ### 1.3. Version C: Just Drop All Edges (But Leave Self-Loops Alone)
 One equivalent way to implement PMLP is to drop all edges but leave only self-loops in training such that message passing operation will not affect node representations. This is an extreme case of DropEdge [1]. Please refer to their [paper](https://arxiv.org/pdf/1907.10903.pdf) for more information. 
@@ -109,7 +109,7 @@ my_own_gnn.eval()
 prediction = my_own_gnn(x, edges)
 ```
 
-This implementation makes PMLP very easy to adapt since one does not need to modify anything on the original GNN class. But please note that this implementation is LESS efficient in training than other PMLP versions as we have observed in practice presumably because it still relies on the messaga passing layer. Please also be careful that it is possible that for some specific message passing layer implementations, the corresponding transition matrix for self-loops is not an indentity matrix, and then this version would not be exactly equivalent to PMLP.
+This implementation makes PMLP very easy to adapt since one does not need to modify anything on the original GNN class. ***But please note that this implementation is LESS efficient than other PMLP versions as we have observed in practice***, presumably because it still relies on the messaga passing layer. Please also be careful that it is possible that for some specific message passing implementations, the corresponding transition matrix for self-loops is not an indentity matrix, and then this version would not be exactly equivalent to PMLP.
 
 ### 1.4. Version D: Load Your Pretrained MLP
 The last equivalent way to implement PMLP is to define two models, i.e., MLP model and GNN model. We first pretrain the MLP model, save the `state_dict()`, then load it to the GNN model, and finally use it directly for inference or do whatever we want on top of it. 
