@@ -34,7 +34,7 @@ class PMLP_GCN(nn.Module):
 
     def reset_parameters(self):
         for mlp in self.fcs: 
-            nn.init.xavier_uniform_(mlp.weight, gain=1.0)
+            nn.init.xavier_uniform_(mlp.weight, gain=1.414)
             nn.init.zeros_(mlp.bias)
 
     def forward(self, x, edge_index, use_conv=True):
@@ -72,7 +72,7 @@ class PMLP_SGC(nn.Module):
 
     def reset_parameters(self):
         for mlp in self.fcs: 
-            nn.init.xavier_uniform_(mlp.weight, gain=1.0)
+            nn.init.xavier_uniform_(mlp.weight, gain=1.414)
             nn.init.zeros_(mlp.bias)
 
     def forward(self, x, edge_index, use_conv=True):
@@ -110,7 +110,7 @@ class PMLP_APPNP(nn.Module): #residual connection
 
     def reset_parameters(self):
         for mlp in self.fcs: 
-            nn.init.xavier_uniform_(mlp.weight, gain=1.0)
+            nn.init.xavier_uniform_(mlp.weight, gain=1.414)
             nn.init.zeros_(mlp.bias)
 
     def forward(self, x, edge_index, use_conv=True):
@@ -148,7 +148,7 @@ class PMLP_GCNII(nn.Module): #GCNII
 
     def reset_parameters(self):
         for mlp in self.fcs: 
-            nn.init.xavier_uniform_(mlp.weight, gain=1.0)
+            nn.init.xavier_uniform_(mlp.weight, gain=1.414)
             nn.init.zeros_(mlp.bias)
 
     def forward(self, x, edge_index, use_conv=True):
@@ -189,7 +189,7 @@ class PMLP_JKNet(nn.Module): #JKNET(concatation pooling)
 
     def reset_parameters(self):
         for mlp in self.fcs: 
-            nn.init.xavier_uniform_(mlp.weight, gain=1.0)
+            nn.init.xavier_uniform_(mlp.weight, gain=1.414)
             nn.init.zeros_(mlp.bias)
 
     def forward(self, x, edge_index, use_conv=True):
@@ -225,7 +225,7 @@ class PMLP_SGCres(nn.Module): #SGC with residual connections
 
     def reset_parameters(self):
         for mlp in self.fcs: 
-            nn.init.xavier_uniform_(mlp.weight, gain=1.0)
+            nn.init.xavier_uniform_(mlp.weight, gain=1.414)
             nn.init.zeros_(mlp.bias)
 
     def forward(self, x, edge_index, use_conv=True):
@@ -263,7 +263,7 @@ class PMLP_SGCresinf(nn.Module): #SGC with residual connections (in test but not
 
     def reset_parameters(self):
         for mlp in self.fcs: 
-            nn.init.xavier_uniform_(mlp.weight, gain=1.0)
+            nn.init.xavier_uniform_(mlp.weight, gain=1.414)
             nn.init.zeros_(mlp.bias)
 
     def forward(self, x, edge_index, use_conv=True):
@@ -302,7 +302,7 @@ class PMLP_APPNPres(nn.Module):
 
     def reset_parameters(self):
         for mlp in self.fcs: 
-            nn.init.xavier_uniform_(mlp.weight, gain=1.0)
+            nn.init.xavier_uniform_(mlp.weight, gain=1.414)
             nn.init.zeros_(mlp.bias)
 
     def forward(self, x, edge_index, use_conv=True):
@@ -338,7 +338,7 @@ class PMLP_APPNPresinf(nn.Module):
 
     def reset_parameters(self):
         for mlp in self.fcs: 
-            nn.init.xavier_uniform_(mlp.weight, gain=1.0)
+            nn.init.xavier_uniform_(mlp.weight, gain=1.414)
             nn.init.zeros_(mlp.bias)
 
     def forward(self, x, edge_index, use_conv=True):

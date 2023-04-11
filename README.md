@@ -8,7 +8,7 @@ Related materials:
 <img src="materials/illustration.png" width="900">
 
 ### What's news
-[2023.04.11] We upload the (conference version) slide and add a "Quick Guide" section summarizing key points in implementations.
+[2023.04.11] We upload the (conference version) slide and add a "Quick Guide" section summarizing different ways to implement PMLP.
 
 [2023.02.09] We release the early version of our codes for reproducibility (more detailed info will be updated soon).
 
@@ -20,19 +20,20 @@ Related materials:
 
 
 ## 1. Quick Guide
+The implementation of PMLP is very simple, and can be plugged into your own pipeline by modifying only a few lines of codes. Here we introduce several different ways to implement PMLP.
 
-### 1.1. Version A: Default PMLP Implementation
-The implementation of PMLP is very simple, and can be plugged into your own pipeline by modifying only a few lines of codes. The key part of this implementation is to add a `use_conv = True/False` parameter in the `self.forward()` function for any GNN classes. This parameter is set to be `False` in training and validation, and reset to be `True` in testing. For example:
+### 1.1. Version A: Three Models (MLP/PMLP/GNN) in One Class
+This is the default way to implement PMLP, which combines three models (MLP, PMLP, GNN) in one single class. The key part of this implementation is to add a `use_conv = True/False` parameter in the `self.forward()` function for any GNN classes. To implement PMLP, just set this parameter to be `False` in training and validation, and then reset it to be `True` in testing. For example:
 
 ``` python
-# version 1
+# version A: three models (mlp, pmlp, gnn) in one class
 class My_Own_GNN(nn.Module):
     ...
-    def forward(self, x, edge_index, use_conv = True):
+    def forward(self, x, edges, use_conv = True):
         ...
         x = self.feed_forward_layer(x) 
         if use_conv: 
-            x = self.message_passing_layer(x, edge_index)  
+            x = self.message_passing_layer(x, edges)  
         ...
         return x
 
@@ -48,42 +49,77 @@ my_own_gnn.eval()
 prediction = my_own_gnn(x, edge, use_conv = True)
 ```
 
-This implementation is very flexible: If `use_conv` is `True` is both training and testing, the model is equivalent to the original GNN. And if `use_conv` is `False` is both training and testing, the model is equivalent to MLP (or other 'backbone' models).
+This implementation is very flexible. If `use_conv = True` is both training and testing, the model is equivalent to the original GNN. And if `use_conv = False` is both training and testing, the model is equivalent to the original MLP (or other 'backbone' models). One can optionally let `use_conv = True` for validation by modifying the `evaluate()` function in `data_utils.py`, which could lead to better or worse performance depending on the specific task.
 
-### 1.2. Version B: One Line to Implement PMLP
+### 1.2. Version B: One Line of Code is All You Need
 Here is the most simple way to implement PMLP, which leverages the (PyTorch) built-in parameter `self.training` to automatically specify when to use graph convolution.
 
 ``` python
-# version 2
+# version B: one line of code is all you need
 class My_Own_GNN(nn.Module):
     ...
-    def forward(self, x, edge_index):
+    def forward(self, x, edges):
         ...
         x = self.feed_forward_layer(x) 
         if not self.training: # only modified part
-            x = self.message_passing_layer(x, edge_index)  
+            x = self.message_passing_layer(x, edges)  
         ...
         return x
 
 my_own_gnn = My_Own_GNN()
 
+# in the training loop
 my_own_gnn.train()
 for epoch in range(args.epochs):
     prediction = my_own_gnn(x, edge)
 
+# for inference
 my_own_gnn.eval()
 prediction = my_own_gnn(x, edge)
 ```
 
-### 1.3. PMLP Extensions
+### 1.3. Version C: Just Drop All Edges (But Leave Self-Loops Alone)
+Another way to implement PMLP if to drop all edges but leave only self-loops in training such that message passing operation will not affect node representations. This is an extreme case of DropEdge [1]. Please refer to their [paper](https://arxiv.org/pdf/1907.10903.pdf) for more information. 
+
+``` python
+# version C: just drop all edges (but leave self-loops alone)
+class My_Own_GNN(nn.Module):
+    ...
+    def forward(self, x, edges):
+        ...
+        x = self.feed_forward_layer(x) 
+        x = self.message_passing_layer(x, edges)  
+        ...
+        return x
+
+my_own_gnn = My_Own_GNN()
+
+# create a graph with only self-loops
+self_loops = torch.nonzero(torch.eye(node_numbers)).t()
+
+# in the training loop
+my_own_gnn.train()
+for epoch in range(args.epochs):
+    prediction = my_own_gnn(x, self_loops)
+
+# for inference
+my_own_gnn.eval()
+prediction = my_own_gnn(x, edges)
+```
+
+### 1.4. Version D: Load Your Pretrained MLP
 (coming soon)
+
+
+[1] Rong, Yu, et al. "DropEdge: Towards Deep Graph Convolutional Networks on Node Classification." International Conference on Learning Representations 2020.
+
 
 ## 2. Run the Code
 Step 1. Install the required package according to `requirements.txt`.
 
 Step 2. Specify your own data path in `parse.py` and download the datasets.
 
-Step 3. To run the training and evaluation, one can use the following scripts.
+Step 3. To run the training and evaluation, one can use the following scripts (for version A).
 
 Step 4. Results will be saved in a folder named `results`
 
