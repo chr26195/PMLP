@@ -12,9 +12,44 @@ from torch_geometric.utils import remove_self_loops, add_self_loops, degree
 from conv import *
 
 
-class PMLP_GCN(nn.Module): 
+class MLP(nn.Module): 
     def __init__(self, in_channels, hidden_channels, out_channels, args, num_node):
-        super(PMLP_GCN, self).__init__()
+        super(MLP, self).__init__()
+        self.args = args
+        self.dropout = args.dropout
+        self.num_node = num_node
+        self.num_layers = args.num_layers
+        self.ff_bias = True  
+
+        self.bns = nn.BatchNorm1d(hidden_channels, affine=False, track_running_stats=False)
+        self.activation = F.relu
+
+        self.fcs = nn.ModuleList([])
+        self.fcs.append(nn.Linear(in_channels, hidden_channels, bias=self.ff_bias))
+        for _ in range(self.num_layers - 2): self.fcs.append(nn.Linear(hidden_channels, hidden_channels, bias=self.ff_bias)) #1s
+        self.fcs.append(nn.Linear(hidden_channels, out_channels, bias=self.ff_bias)) #1
+        self.reset_parameters()
+    
+
+    def reset_parameters(self):
+        for mlp in self.fcs: 
+            nn.init.xavier_uniform_(mlp.weight, gain=1.414)
+            nn.init.zeros_(mlp.bias)
+
+    def forward(self, x, edge_index = None):
+        for i in range(self.num_layers):
+            x = x @ self.fcs[i].weight.t() 
+            if self.ff_bias: x = x + self.fcs[i].bias
+            if i != self.num_layers - 1:
+                x = self.activation(self.bns(x))
+                x = F.dropout(x, p=self.dropout, training=self.training)
+        return x
+    
+
+
+class GCN(nn.Module): 
+    def __init__(self, in_channels, hidden_channels, out_channels, args, num_node):
+        super(GCN, self).__init__()
         self.args = args
         self.dropout = args.dropout
         self.num_node = num_node
@@ -44,5 +79,4 @@ class PMLP_GCN(nn.Module):
             if i != self.num_layers - 1:
                 x = self.activation(self.bns(x))
                 x = F.dropout(x, p=self.dropout, training=self.training)
-
         return x
