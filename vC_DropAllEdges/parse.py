@@ -11,7 +11,7 @@ def parser_add_main_args(parser):
     # dataset and evaluation
     parser.add_argument('--dataset', type=str, default='cora')
     parser.add_argument('--sub_dataset', type=str, default='')
-    parser.add_argument('--data_dir', type=str, default='/home/wuqitian/NodeFormer/data/')
+    parser.add_argument('--data_dir', type=str, default='data')
     parser.add_argument('--device', type=int, default=0,
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--seed', type=int, default=123)
@@ -52,7 +52,7 @@ def parser_add_main_args(parser):
     parser.add_argument('--weight_decay', type=float, default=1e-3)
     parser.add_argument('--dropout', type=float, default=0.0)
 
-    parser.add_argument('--method', default='pmlp_gcn') 
+    parser.add_argument('--method', default='pmlp_gcn') # options: [pmlp_gcn, pmlp_sgc, pmlp_appnp, pmlp_gcnii, pmlp_jknet, ....]
     parser.add_argument('--trans', action='store_true') # transductive (whole graph structure for train)
     parser.add_argument('--induc', action='store_true') # inductive (graph structure of training node for train) setting
     # -------------------------------------------------------------------------------------            

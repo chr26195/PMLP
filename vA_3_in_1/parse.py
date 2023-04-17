@@ -22,7 +22,7 @@ def parser_add_main_args(parser):
     # dataset and evaluation
     parser.add_argument('--dataset', type=str, default='cora')
     parser.add_argument('--sub_dataset', type=str, default='')
-    parser.add_argument('--data_dir', type=str, default='/home/wuqitian/NodeFormer/data/')
+    parser.add_argument('--data_dir', type=str, default='data')
     parser.add_argument('--device', type=int, default=0,
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--seed', type=int, default=123)
@@ -63,7 +63,7 @@ def parser_add_main_args(parser):
     parser.add_argument('--weight_decay', type=float, default=1e-3)
     parser.add_argument('--dropout', type=float, default=0.0)
 
-    parser.add_argument('--method', default='mp') # options: [mp, fp, lp]
+    parser.add_argument('--method', default='pmlp_gcn') # options: [pmlp_gcn, pmlp_sgc, pmlp_appnp, pmlp_gcnii, pmlp_jknet, ....]
     parser.add_argument('--conv_tr', action='store_true')
     parser.add_argument('--conv_va', action='store_true')
     parser.add_argument('--conv_te', action='store_true')
