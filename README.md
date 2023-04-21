@@ -12,7 +12,7 @@ Related materials:
 
 [2023.02.09] We release the early version of our codes for reproducibility (more detailed info will be updated soon).
 
-## 0. What Could I Do with PMLP?
+## 0. What Could We Do with PMLP?
 * Accelerate GNN training by modifying only a few lines of codes.
 * Empower MLP (or any other backbone models) by incorporating message passing / graph convolution in inference.
 * Empower GNN in some scenarios, e.g., datasets with many noisy structures.
@@ -111,7 +111,7 @@ prediction = my_own_gnn(x, edges)
 
 This implementation makes PMLP very easy to adapt since one does not need to modify anything on the original GNN class. ***But please note that this implementation is LESS efficient than other PMLP versions as we have observed in practice***, presumably because it still relies on the messaga passing layer. Please also be careful that it is possible that for some specific message passing implementations, the corresponding transition matrix for self-loops is not an indentity matrix, and then this version would not be exactly equivalent to PMLP.
 
-### 1.4. Version D: Load Your Pretrained MLP
+### 1.4. Version D: Load Pretrained MLP
 The last equivalent way to implement PMLP is to define two models, i.e., MLP model and GNN model. We first pretrain the MLP model, save the `state_dict()`, then load it to the GNN model, and finally use it directly for inference or do whatever we want on top of it. 
 
 ``` python
