@@ -17,11 +17,11 @@ Related materials:
 ## Table of Contents
 
 - [0. What Could We Do with PMLP](#0-what-could-we-do-with-pmlp)
-- [1. Quick Guide of Implementation](#1-quick-guide)
-  * [Version A (Default): Three models (MLP / PMLP / GNN) in one class](#11-version-a--three-models--mlp---pmlp---gnn--in-one-class)
-  * [Version B: One line of code is all you need](#12-version-b--one-line-of-code-is-all-you-need)
-  * [Version C: Just drop all edges](#13-version-c--just-drop-all-edges--but-leave-self-loops-alone-)
-  * [Version D: Load pretrained MLP](#14-version-d--load-pretrained-mlp)
+- [1. Quick Guide of Implementation](#1-quick-guide-of-implementation)
+  * [Version A (Default): Three models (MLP / PMLP / GNN) in one class](#version-a--three-models--mlp---pmlp---gnn--in-one-class)
+  * [Version B: One line of code is all you need](#version-b--one-line-of-code-is-all-you-need)
+  * [Version C: Just drop all edges](#version-c--just-drop-all-edges--but-leave-self-loops-alone-)
+  * [Version D: Load pretrained MLP](#version-d--load-pretrained-mlp)
 - [2. PMLP Extensions and FAQ](#2-pmlp-extensions-and-faq)
   * [Q1. Parameterized message passing layers](#q1-how-to-extend-pmlp-to-gnns-with-parameterized-message-passing---graph-convolution-layers--such-as-gat-)
   * [Q2. Unclear how to disentangle GNN layer into MP and FF](#q2-what-if-it-is-unclear-how-to-disentangle-gnn-layers-into-mp-layers-and-ff-layers-)
