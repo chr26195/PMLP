@@ -218,7 +218,6 @@ The main focus of our paper is on node classification. Though we have not tested
 ### Q5. Can PMLP deal with GNN-related problems such as oversmoothing, heterophily, oversquashing ...?
 It is worth noting that these GNN-related problems are orthogonal to PMLP framework. Whether PMLP can solve these issues depends on the design of its GNN counterpart. In our paper's Appendix, we have provided some discussions on these issues. While we have not conducted an in-depth investigation into these GNN-related problems, we encourage you to leverage PMLP as an analytical tool or explore its potential in your research.
 
-
 ## 3. Run the Code
 Step 1. Install the required package according to `requirements.txt`.
 
