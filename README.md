@@ -172,7 +172,7 @@ prediction = my_gnn(x, edge, use_conv = True)
 
 Such a solution was inspired by a concurrent work MLPInit and we thank them for their great contributions. Please refer to their [paper](https://arxiv.org/pdf/2210.00102.pdf) for more information. 
 
-### Q2. What if it is unclear how to disentangle MP layers and FF layers?
+### Q2. What if it is unclear how to disentangle GNN layers into MP layers and FF layers?
 Indeed, there exist GNNs whose layers are hard to be disentangled into MP layers and FF layers. In such cases, one can consider using our Version C (Just Drop All Edges) which replaces the original adjacency matrix with an indentity matrix, and is equivalent to dropping all edges (except self-loops) in the graph. But note again that this version might not be as efficient as other versions. One can optimize the code accordingly in such cases.
 
 ### Q3. How to extend PMLP to transductive / semi-supervised learning?
