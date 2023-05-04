@@ -17,7 +17,7 @@ Related materials:
 ## Table of Contents
 
 - [0. What Could We Do with PMLP](#0-what-could-we-do-with-pmlp)
-- [1. Quick Guide](#1-quick-guide)
+- [1. Quick Guide of Implementation](#1-quick-guide)
   * [Version A (Default): Three models (MLP / PMLP / GNN) in one class](#11-version-a--three-models--mlp---pmlp---gnn--in-one-class)
   * [Version B: One line of code is all you need](#12-version-b--one-line-of-code-is-all-you-need)
   * [Version C: Just drop all edges](#13-version-c--just-drop-all-edges--but-leave-self-loops-alone-)
@@ -39,7 +39,7 @@ Related materials:
 * Simple and useful tool for research and scientific discovery.
 
 
-## 1. Quick Guide
+## 1. Quick Guide of Implementation
 The implementation of PMLP is very simple, and can be plugged into one's own pipeline by modifying only a few lines of codes. **The key idea of PMLP is to just remove message passing modules in GNNs during training.** We allow the model after removal of message passing layers to be other models, such as ResNet (corresponding to GCNII) and MLP+JK (corresponding to JKNet). Here we introduce several different ways to implement PMLP and discuss their advantages and limitations.
 
 ### Version A: Three Models (MLP / PMLP / GNN) in One Class
