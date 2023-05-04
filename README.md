@@ -14,7 +14,25 @@ Related materials:
 
 [2023.02.09] We release the early version of our codes for reproducibility (more detailed info will be updated soon).
 
-## 0. What Could We Do with PMLP?
+### Table of Contents
+
+- [0. What Could We Do with PMLP](#0-what-could-we-do-with-pmlp)
+- [1. Quick Guide](#1-quick-guide)
+  * [1.1. Version A: Three Models (MLP / PMLP / GNN) in One Class](#11-version-a--three-models--mlp---pmlp---gnn--in-one-class)
+  * [1.2. Version B: One Line of Code is All You Need](#12-version-b--one-line-of-code-is-all-you-need)
+  * [1.3. Version C: Just Drop All Edges (But Leave Self-Loops Alone)](#13-version-c--just-drop-all-edges--but-leave-self-loops-alone-)
+  * [1.4. Version D: Load Pretrained MLP](#14-version-d--load-pretrained-mlp)
+- [2. PMLP Extensions and FAQ](#2-pmlp-extensions-and-faq)
+  * [Q1. How to extend PMLP to GNNs with parameterized message passing / graph convolution layers, such as GAT?](#q1-how-to-extend-pmlp-to-gnns-with-parameterized-message-passing---graph-convolution-layers--such-as-gat-)
+  * [Q2. What if it is unclear how to disentangle GNN layers into MP layers and FF layers?](#q2-what-if-it-is-unclear-how-to-disentangle-gnn-layers-into-mp-layers-and-ff-layers-)
+  * [Q3. How to extend PMLP to transductive / semi-supervised learning?](#q3-how-to-extend-pmlp-to-transductive---semi-supervised-learning-)
+  * [Q4. What about other tasks such as link prediction, graph classification, recommender systems, knowledge graphs ...?](#q4-what-about-other-tasks-such-as-link-prediction--graph-classification--recommender-systems--knowledge-graphs--)
+  * [Q5. Can PMLP deal with GNN-related problems such as oversmoothing, heterophily, oversquashing ...?](#q5-can-pmlp-deal-with-gnn-related-problems-such-as-oversmoothing--heterophily--oversquashing--)
+- [3. Run the Code](#3-run-the-code)
+- [Citation and Contact](#citation-and-contact)
+
+
+## 0. What Could We Do with PMLP
 * Accelerate GNN training by modifying only a few lines of codes.
 * Empower MLP (or any other backbone models) by incorporating message passing / graph convolution in inference.
 * Empower GNN in some scenarios, e.g., datasets with many noisy structures.
@@ -25,7 +43,7 @@ Related materials:
 The implementation of PMLP is very simple, and can be plugged into one's own pipeline by modifying only a few lines of codes. **The key idea of PMLP is to just remove message passing modules in GNNs during training.** We allow the model after removal of message passing layers to be other models, such as ResNet (corresponding to GCNII) and MLP+JK (corresponding to JKNet). Here we introduce several different ways to implement PMLP and discuss their advantages and limitations.
 
 ### 1.1. Version A: Three Models (MLP / PMLP / GNN) in One Class
-This is the default way and go-to choice to implement PMLP, which combines three models (MLP, PMLP, GNN) in one single class. The key idea of this implementation is to add a `use_conv = True/False` parameter in the `self.forward()` function for any GNN classes. To implement PMLP, just set this parameter to be `False` in training and validation, and then reset it to be `True` in testing. For example:
+This is the default way and go-to choice to implement PMLP, which combines three models (MLP, PMLP, GNN) in one single class. The key idea of this implementation is to add a `use_conv = True/False` parameter in the `self.forward()` function for any GNN classes. To implement PMLP, just set this parameter to be `False` in training and validation, and then reset it to be `True` in testing. For example
 
 ``` python
 # version A: three models (mlp, pmlp, gnn) in one class
@@ -153,7 +171,7 @@ prediction = model_gnn(x, edges)
 
 This version is more complicated than others in terms of implementation but could be suitable for empowering pre-trained MLP (or any other backbone models) by incorporating message passing / graph convolution in inference and some other scenarios.
 
-## 2. PMLP Extensions / Frequent Questions
+## 2. PMLP Extensions and FAQ
 This section summarizes frequently asked questions and will continously update.
 
 ### Q1. How to extend PMLP to GNNs with parameterized message passing / graph convolution layers, such as GAT?
@@ -233,7 +251,8 @@ If you find our codes useful or get inspirations from our research, please consi
     year = {2023}
 }
 ```
-(Advertisement) Wanna further accelerate GNN in inference or gain insights on how GNNs capture data geometry? Please check our previous work "Geometric Knowledge Distillation: Topology Compression for Graph Neural Networks" in NeurIPS 2022. ([paper](https://arxiv.org/pdf/2210.13014.pdf), [code](https://github.com/chr26195/GKD)).
+
+Wanna further accelerate GNN in inference or gain insights on how GNNs capture data geometry? Please check our previous work "Geometric Knowledge Distillation: Topology Compression for Graph Neural Networks" in NeurIPS 2022. ([paper](https://arxiv.org/pdf/2210.13014.pdf), [code](https://github.com/chr26195/GKD)).
 ```bibtex
 @inproceedings{yang2022geometric,
       title = {Geometric Knowledge Distillation: Topology Compression for Graph Neural Networks},
