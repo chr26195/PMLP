@@ -16,6 +16,7 @@ Related materials:
 
 ## Table of Contents
 
+
 - [0. What Could We Do with PMLP](#0-what-could-we-do-with-pmlp)
 - [1. Quick Guide of Implementation](#1-quick-guide-of-implementation)
   * [Version A (Default): Three models (MLP / PMLP / GNN) in one class](#version-a--three-models--mlp---pmlp---gnn--in-one-class)
