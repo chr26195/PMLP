@@ -8,8 +8,9 @@ Related materials:
 <img src="materials/illustration.png" width="900">
 
 ### What's news
+[2023.05.04] We add a new "PMLP Extensions / Frequent Questions" section summarizing extensions of PMLP and frequently asked questions. We would like to thank the readers who raised questions via email or during the ICLR in-person poster session.
 
-[2023.04.11] We upload the (conference version) slide and add a "Quick Guide" section summarizing different ways to implement PMLP.
+[2023.04.11] We upload the (conference version) slide and add a "Quick Guide" section summarizing four ways to implement PMLP, with discussions of their advantages and limitations.
 
 [2023.02.09] We release the early version of our codes for reproducibility (more detailed info will be updated soon).
 
@@ -28,7 +29,7 @@ This is the default way and go-to choice to implement PMLP, which combines three
 
 ``` python
 # version A: three models (mlp, pmlp, gnn) in one class
-class My_Own_GNN(nn.Module):
+class My_GNN(nn.Module):
     ...
     def forward(self, x, edges, use_conv = True):
         ...
@@ -38,16 +39,16 @@ class My_Own_GNN(nn.Module):
         ...
         return x
 
-my_own_gnn = My_Own_GNN()
+my_gnn = My_GNN()
 
 # in the training loop
-my_own_gnn.train()
+my_gnn.train()
 for epoch in range(args.epochs):
-    prediction = my_own_gnn(x, edge, use_conv = False)
+    prediction = my_gnn(x, edge, use_conv = False)
 
 # for inference
-my_own_gnn.eval()
-prediction = my_own_gnn(x, edge, use_conv = True)
+my_gnn.eval()
+prediction = my_gnn(x, edge, use_conv = True)
 ```
 
 This implementation is very flexible. If `use_conv = True` is both training and testing, the model is equivalent to the original GNN. And if `use_conv = False` is both training and testing, the model is equivalent to the original MLP (or other 'backbone' models). One can optionally let `use_conv = True` for validation by modifying the `evaluate()` function in `data_utils.py`, which could lead to better or worse performance depending on the specific task and could be treated as a hyperparameter to tune. In default, we do not use message passing in validation such that the model selection process of PMLP is also equivalent to MLP. Many extensions of PMLP can be developed upon this implementation for adapting to new tasks or further boosting performance. For example, we can specify `def if_use_conv(*args)` as a function of different inputs (e.g., whether the model is training, whether the loss function has reached a certain threshold, current training epoch, etc.) to control concretely when and where to use message passing layers.
@@ -57,7 +58,7 @@ Here is the most simple way to implement PMLP, which only requires modifying onl
 
 ``` python
 # version B: one line of code is all you need
-class My_Own_GNN(nn.Module):
+class My_GNN(nn.Module):
     ...
     def forward(self, x, edges):
         ...
@@ -67,16 +68,16 @@ class My_Own_GNN(nn.Module):
         ...
         return x
 
-my_own_gnn = My_Own_GNN()
+my_gnn = My_GNN()
 
 # in the training loop
-my_own_gnn.train()
+my_gnn.train()
 for epoch in range(args.epochs):
-    prediction = my_own_gnn(x, edges)
+    prediction = my_gnn(x, edges)
 
 # for inference
-my_own_gnn.eval()
-prediction = my_own_gnn(x, edges)
+my_gnn.eval()
+prediction = my_gnn(x, edges)
 ```
 
 One limitation of this implementation is that it enforces using message passing (i.e., the GNN architecture) for validation (since usually we use `model.eval()` before validation and `self.training` is automatically set to be `False`). However, this is totally acceptable in most scenarios since validation is not the bottleneck of training efficiency and using message passing in validation often improves performance. 
@@ -86,7 +87,7 @@ One equivalent way to implement PMLP is to drop all edges but leave only self-lo
 
 ``` python
 # version C: just drop all edges (but leave self-loops alone)
-class My_Own_GNN(nn.Module):
+class My_GNN(nn.Module):
     ...
     def forward(self, x, edges):
         ...
@@ -95,19 +96,19 @@ class My_Own_GNN(nn.Module):
         ...
         return x
 
-my_own_gnn = My_Own_GNN()
+my_gnn = My_GNN()
 
 # create a graph with only self-loops
 self_loops = torch.nonzero(torch.eye(node_numbers)).t()
 
 # in the training loop
-my_own_gnn.train()
+my_gnn.train()
 for epoch in range(args.epochs):
-    prediction = my_own_gnn(x, self_loops)
+    prediction = my_gnn(x, self_loops)
 
 # for inference
-my_own_gnn.eval()
-prediction = my_own_gnn(x, edges)
+my_gnn.eval()
+prediction = my_gnn(x, edges)
 ```
 
 This implementation makes PMLP very easy to adapt since one does not need to modify anything on the original GNN class. ***But please note that this implementation is LESS efficient than other PMLP versions as we have observed in practice***, presumably because it still relies on the messaga passing layer. Please also be careful that it is possible that for some specific message passing implementations, the corresponding transition matrix for self-loops is not an indentity matrix, and then this version would not be exactly equivalent to PMLP.
@@ -117,7 +118,7 @@ Another equivalent way to implement PMLP is to define two models, i.e., MLP mode
 
 ``` python
 # version D: Load Pretrained MLP
-class My_Own_GNN(nn.Module):
+class My_GNN(nn.Module):
     ...
     def forward(self, x, edges):
         ...
@@ -126,7 +127,7 @@ class My_Own_GNN(nn.Module):
         ...
         return x
 
-class Corresponding_MLP(nn.Module):
+class MLP(nn.Module):
     ...
     def forward(self, x, edges):
         ...
@@ -134,8 +135,8 @@ class Corresponding_MLP(nn.Module):
         ...
         return x
 
-model_mlp = Corresponding_MLP()
-model_gnn = My_Own_GNN()
+model_mlp = MLP()
+model_gnn = My_GNN()
 
 # in the training loop
 model_mlp.train()
@@ -152,8 +153,53 @@ prediction = model_gnn(x, edges)
 
 This version is more complicated than others in terms of implementation but could be suitable for empowering pre-trained MLP (or any other backbone models) by incorporating message passing / graph convolution in inference and some other scenarios.
 
-## 2. Bag of Tricks to Boost PMLP
-(coming soon)
+## 2. PMLP Extensions / Frequent Questions
+This section summarizes frequently asked questions and will continously update.
+
+### Q1. How to extend PMLP to GNNs with parameterized message passing / graph convolution layers, such as GAT?
+Many existing GNNs consist of parameterized message passing layers. For those cases, one can consider set a two-stage training. For the first stage of training, one can remove message passing layers such that the model is equivalent to MLP or other backbone NN architectures. For the second stage of training, one can add those layers (with trainable parameters) back and fine-tune the model using a few epochs. Here is a simple example code where this procedure is implemented in an end-to-end manner:
+
+``` python
+# in the training loop
+my_gnn.train()
+for epoch in range(1000):
+    prediction = my_gnn(x, edge, use_conv = False if epoch < 900 else True)
+
+# for inference
+my_gnn.eval()
+prediction = my_gnn(x, edge, use_conv = True)
+```
+
+Such a solution was inspired by a concurrent work MLPInit and we thank them for their great contributions. Please refer to their [paper](https://arxiv.org/pdf/2210.00102.pdf) for more information. 
+
+### Q2. What if it is unclear how to disentangle MP layers and FF layers?
+Indeed, there exist GNNs whose layers are hard to be disentangled into MP layers and FF layers. In such cases, one can consider using our Version C (Just Drop All Edges) which replaces the original adjacency matrix with an indentity matrix, and is equivalent to dropping all edges (except self-loops) in the graph. But note again that this version might not be as efficient as other versions. One can optimize the code accordingly in such cases.
+
+### Q3. How to extend PMLP to transductive / semi-supervised learning?
+PMLP can be extended to transductive learning by flexibly choosing various approaches to incorporate unlabeled nodes in training such as the one described in Q1. Particularly, we found that generating pseudo labels for unlabeled nodes (in a non-differiatable way) as data augmentation can further improve the performance of PMLP. The extent to which performance is improved depends on the specific task and the approach used for label generation. Here ia an example code for reference
+
+``` python
+if args.trans == True:
+    out_prob = F.softmax(out, dim=1)
+    true_label = F.one_hot(dataset.label, dataset.label.max() + 1).squeeze(1).to(torch.float)
+    train_mask = torch.zeros(out.shape[0]).bool().to(device)
+    train_mask[train_idx] = True
+
+    pseudo_label = torch.empty_like(true_label)
+    pseudo_label[train_mask] = true_label[train_mask]
+    pseudo_label[~train_mask] = out_prob[~train_mask].detach()
+    pseudo_label[~train_mask] = gcn_conv(pseudo_label, dataset.graph['edge_index'])[~train_mask]
+    pseudo_label[~train_mask] = pseudo_label[~train_mask] / pseudo_label[~train_mask].sum(dim=-1, keepdim=True)
+    
+    loss = nn.KLDivLoss(reduction='batchmean')(F.log_softmax(out, dim=1), pseudo_label)
+```
+
+### Q4. What about other tasks such as link prediction, graph classification, recommender systems, knowledge graphs ...?
+The main focus of our paper is on node classification. Though we have not tested PMLP on other GNN-related tasks, we encourage you to explore its potential in other tasks. Feel free to try it out and see how it performs.
+
+### Q5. Can PMLP deal with GNN-related problems such as oversmoothing, heterophily, oversquashing ...?
+It is worth noting that these GNN-related problems are orthogonal to PMLP framework. Whether PMLP can solve these issues depends on the design of its GNN counterpart. In our paper's Appendix, we have provided some discussions on these issues. While we have not conducted an in-depth investigation into these GNN-related problems, we encourage you to leverage PMLP as an analytical tool or explore its potential in your research.
+
 
 ## 3. Run the Code
 Step 1. Install the required package according to `requirements.txt`.
@@ -178,7 +224,7 @@ python main.py --dataset cora --method pmlp_gcn --protocol semi --lr 0.1 --weigh
 `--induc` and `--trans` are used to specify inductive or transductive learning settings.
 
 ## Citation and Contact
-If you found our codes useful, please consider giving this project a star. If you are inspired by PMLP in your research, please consider citing our work
+If you find our codes useful or get inspirations from our research, please consider citing our work.
 ```bibtex
 @inproceedings{yang2023pmlp,
     title = {Graph Neural Networks are Inherently Good Generalizers: Insights by Bridging GNNs and MLPs},
@@ -187,8 +233,7 @@ If you found our codes useful, please consider giving this project a star. If yo
     year = {2023}
 }
 ```
-
-Wanna further accelerate GNN in inference or gain insights on how GNNs capture data geometry? Please check our previous work "Geometric Knowledge Distillation: Topology Compression for Graph Neural Networks" in NeurIPS 2022. ([paper](https://arxiv.org/pdf/2210.13014.pdf), [code](https://github.com/chr26195/GKD)).
+(Advertisement) Wanna further accelerate GNN in inference or gain insights on how GNNs capture data geometry? Please check our previous work "Geometric Knowledge Distillation: Topology Compression for Graph Neural Networks" in NeurIPS 2022. ([paper](https://arxiv.org/pdf/2210.13014.pdf), [code](https://github.com/chr26195/GKD)).
 ```bibtex
 @inproceedings{yang2022geometric,
       title = {Geometric Knowledge Distillation: Topology Compression for Graph Neural Networks},
