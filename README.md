@@ -26,8 +26,8 @@ Related materials:
   * [Q1. Parameterized message passing layers](#q1-how-to-extend-pmlp-to-gnns-with-parameterized-message-passing---graph-convolution-layers--such-as-gat-)
   * [Q2. Unclear how to disentangle GNN layer into MP and FF](#q2-what-if-it-is-unclear-how-to-disentangle-gnn-layers-into-mp-layers-and-ff-layers-)
   * [Q3. Transductive / semi-supervised learning](#q3-how-to-extend-pmlp-to-transductive---semi-supervised-learning-)
-  * [Q4. Other tasks, e.g., link prediction, graph classification, recommender systems](#q4-what-about-other-tasks-such-as-link-prediction--graph-classification--recommender-systems--knowledge-graphs--)
-  * [Q5. GNN-related problems such as oversmoothing, heterophily, oversquashing](#q5-can-pmlp-deal-with-gnn-related-problems-such-as-oversmoothing--heterophily--oversquashing--)
+  * [Q4. Other tasks: link prediction, graph classification, recommender systems, etc.](#q4-what-about-other-tasks-such-as-link-prediction--graph-classification--recommender-systems--knowledge-graphs--)
+  * [Q5. GNN problems: oversmoothing, heterophily, oversquashing, etc.](#q5-can-pmlp-deal-with-gnn-related-problems-such-as-oversmoothing--heterophily--oversquashing--)
 - [3. Run the Code](#3-run-the-code)
 - [Citation and Contact](#citation-and-contact)
 
