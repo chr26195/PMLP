@@ -18,10 +18,10 @@ Related materials:
 
 - [0. What Could We Do with PMLP](#0-what-could-we-do-with-pmlp)
 - [1. Quick Guide](#1-quick-guide)
-  * [1.1. Version A: Three models (MLP / PMLP / GNN) in one class](#11-version-a--three-models--mlp---pmlp---gnn--in-one-class)
-  * [1.2. Version B: One line of code is all you need](#12-version-b--one-line-of-code-is-all-you-need)
-  * [1.3. Version C: Just drop all edges](#13-version-c--just-drop-all-edges--but-leave-self-loops-alone-)
-  * [1.4. Version D: Load pretrained MLP](#14-version-d--load-pretrained-mlp)
+  * [Version A (Default): Three models (MLP / PMLP / GNN) in one class](#11-version-a--three-models--mlp---pmlp---gnn--in-one-class)
+  * [Version B: One line of code is all you need](#12-version-b--one-line-of-code-is-all-you-need)
+  * [Version C: Just drop all edges](#13-version-c--just-drop-all-edges--but-leave-self-loops-alone-)
+  * [Version D: Load pretrained MLP](#14-version-d--load-pretrained-mlp)
 - [2. PMLP Extensions and FAQ](#2-pmlp-extensions-and-faq)
   * [Q1. Parameterized message passing layers](#q1-how-to-extend-pmlp-to-gnns-with-parameterized-message-passing---graph-convolution-layers--such-as-gat-)
   * [Q2. Unclear how to disentangle GNN layer into MP and FF](#q2-what-if-it-is-unclear-how-to-disentangle-gnn-layers-into-mp-layers-and-ff-layers-)
@@ -42,7 +42,7 @@ Related materials:
 ## 1. Quick Guide
 The implementation of PMLP is very simple, and can be plugged into one's own pipeline by modifying only a few lines of codes. **The key idea of PMLP is to just remove message passing modules in GNNs during training.** We allow the model after removal of message passing layers to be other models, such as ResNet (corresponding to GCNII) and MLP+JK (corresponding to JKNet). Here we introduce several different ways to implement PMLP and discuss their advantages and limitations.
 
-### 1.1. Version A: Three Models (MLP / PMLP / GNN) in One Class
+### Version A: Three Models (MLP / PMLP / GNN) in One Class
 This is the default way and go-to choice to implement PMLP, which combines three models (MLP, PMLP, GNN) in one single class. The key idea of this implementation is to add a `use_conv = True/False` parameter in the `self.forward()` function for any GNN classes. To implement PMLP, just set this parameter to be `False` in training and validation, and then reset it to be `True` in testing. For example
 
 ``` python
@@ -71,7 +71,7 @@ prediction = my_gnn(x, edge, use_conv = True)
 
 This implementation is very flexible. If `use_conv = True` is both training and testing, the model is equivalent to the original GNN. And if `use_conv = False` is both training and testing, the model is equivalent to the original MLP (or other 'backbone' models). One can optionally let `use_conv = True` for validation by modifying the `evaluate()` function in `data_utils.py`, which could lead to better or worse performance depending on the specific task and could be treated as a hyperparameter to tune. In default, we do not use message passing in validation such that the model selection process of PMLP is also equivalent to MLP. Many extensions of PMLP can be developed upon this implementation for adapting to new tasks or further boosting performance. For example, we can specify `def if_use_conv(*args)` as a function of different inputs (e.g., whether the model is training, whether the loss function has reached a certain threshold, current training epoch, etc.) to control concretely when and where to use message passing layers.
 
-### 1.2. Version B: One Line of Code is All You Need
+### Version B: One Line of Code is All You Need
 Here is the most simple way to implement PMLP, which only requires modifying only one line of code in your own GNN pipeline. This implementation leverages the (PyTorch) built-in parameter `self.training` to automatically specify when to use graph convolution.
 
 ``` python
@@ -100,7 +100,7 @@ prediction = my_gnn(x, edges)
 
 One limitation of this implementation is that it enforces using message passing (i.e., the GNN architecture) for validation (since usually we use `model.eval()` before validation and `self.training` is automatically set to be `False`). However, this is totally acceptable in most scenarios since validation is not the bottleneck of training efficiency and using message passing in validation often improves performance. 
 
-### 1.3. Version C: Just Drop All Edges (But Leave Self-Loops Alone)
+### Version C: Just Drop All Edges (But Leave Self-Loops Alone)
 One equivalent way to implement PMLP is to drop all edges but leave only self-loops in training such that message passing operation will not affect node representations. This is an extreme case of DropEdge. Please refer to their [paper](https://arxiv.org/pdf/1907.10903.pdf) for more information. 
 
 ``` python
@@ -131,7 +131,7 @@ prediction = my_gnn(x, edges)
 
 This implementation makes PMLP very easy to adapt since one does not need to modify anything on the original GNN class. ***But please note that this implementation is LESS efficient than other PMLP versions as we have observed in practice***, presumably because it still relies on the messaga passing layer. Please also be careful that it is possible that for some specific message passing implementations, the corresponding transition matrix for self-loops is not an indentity matrix, and then this version would not be exactly equivalent to PMLP.
 
-### 1.4. Version D: Load Pretrained MLP
+### Version D: Load Pretrained MLP
 Another equivalent way to implement PMLP is to define two models, i.e., MLP model and GNN model. We first pretrain the MLP model, save the `state_dict()`, then load it to the GNN model, and finally use it directly for inference or do whatever we want on top of it. 
 
 ``` python
@@ -188,7 +188,7 @@ my_gnn.eval()
 prediction = my_gnn(x, edge, use_conv = True)
 ```
 
-Such a solution was inspired by a concurrent work MLPInit and we thank them for their great contributions. Please refer to their [paper](https://arxiv.org/pdf/2210.00102.pdf) for more information. 
+Such a solution was inspired by a concurrent work MLPInit. Please refer to their [paper](https://arxiv.org/pdf/2210.00102.pdf) for more information. 
 
 ### Q2. What if it is unclear how to disentangle GNN layers into MP layers and FF layers?
 Indeed, there exist GNNs whose layers are hard to be disentangled into MP layers and FF layers. In such cases, one can consider using our Version C (Just Drop All Edges) which replaces the original adjacency matrix with an indentity matrix, and is equivalent to dropping all edges (except self-loops) in the graph. But note again that this version might not be as efficient as other versions. One can optimize the code accordingly in such cases.
