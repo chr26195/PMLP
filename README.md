@@ -14,7 +14,7 @@ Related materials:
 
 [2023.02.09] We release the early version of our codes for reproducibility (more detailed info will be updated soon).
 
-### Table of Contents
+## Table of Contents
 
 - [0. What Could We Do with PMLP](#0-what-could-we-do-with-pmlp)
 - [1. Quick Guide](#1-quick-guide)
