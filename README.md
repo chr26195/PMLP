@@ -3,7 +3,7 @@
 This is the official code repository for "Graph Neural Networks are Inherently Good Generalizers: Insights by Bridging GNNs and MLPs". It is highly recommended to read the "Quick Guide" section before perusing the codes.
 
 Related materials: 
-[paper](https://arxiv.org/pdf/2212.09034.pdf), [slides](https://github.com/chr26195/PMLP/blob/main/materials/slide_conference_version.pdf), [poster](https://github.com/chr26195/PMLP/blob/main/materials/poster.pdf)
+[paper](https://arxiv.org/pdf/2212.09034.pdf), [slides](https://github.com/chr26195/PMLP/blob/main/materials/slide_complete.pdf), [poster](https://github.com/chr26195/PMLP/blob/main/materials/poster.pdf)
 
 <img src="materials/illustration.png" width="900">
 
