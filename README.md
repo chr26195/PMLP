@@ -239,26 +239,3 @@ python main.py --dataset cora --method pmlp_gcn --protocol semi --lr 0.1 --weigh
 ```
 
 `--induc` and `--trans` are used to specify inductive or transductive learning settings.
-
-## Citation and Contact
-If you find our codes useful or get inspirations from our research, please consider citing our work.
-```bibtex
-@inproceedings{yang2023pmlp,
-    title = {Graph Neural Networks are Inherently Good Generalizers: Insights by Bridging GNNs and MLPs},
-    author = {Chenxiao Yang and Qitian Wu and Jiahua Wang and Junchi Yan},
-    booktitle = {International Conference on Learning Representations (ICLR)},
-    year = {2023}
-}
-```
-
-Wanna further accelerate GNN in inference or gain insights on how GNNs capture data geometry? Please check our previous work "Geometric Knowledge Distillation: Topology Compression for Graph Neural Networks" in NeurIPS 2022. ([paper](https://arxiv.org/pdf/2210.13014.pdf), [code](https://github.com/chr26195/GKD)).
-```bibtex
-@inproceedings{yang2022geometric,
-      title = {Geometric Knowledge Distillation: Topology Compression for Graph Neural Networks},
-      author = {Chenxiao Yang and Qitian Wu and Junchi Yan},
-      booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-      year = {2022}
-}
-```
-
-
