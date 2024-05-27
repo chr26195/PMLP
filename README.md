@@ -1,27 +1,21 @@
 ## Graph Neural Networks are Inherently Good Generalizers: Insights by Bridging GNNs and MLPs
 
-This is the official code repository for "Graph Neural Networks are Inherently Good Generalizers: Insights by Bridging GNNs and MLPs". It is highly recommended to read the "Quick Guide" section before perusing the codes.
+This is the official code repository for "Graph Neural Networks are Inherently Good Generalizers: Insights by Bridging GNNs and MLPs". 
 
 Related materials: 
-[paper](https://arxiv.org/pdf/2212.09034.pdf), [slides](https://github.com/chr26195/PMLP/blob/main/materials/slide_complete.pdf), [poster](https://github.com/chr26195/PMLP/blob/main/materials/poster.pdf), [blog(cn)](https://zhuanlan.zhihu.com/p/625104565), [video(cn)](https://www.bilibili.com/video/BV1uh4y1G794)
+[paper](https://arxiv.org/pdf/2212.09034.pdf), [slides](https://github.com/chr26195/PMLP/blob/main/materials/slide_complete.pdf), [poster](https://github.com/chr26195/PMLP/blob/main/materials/poster.pdf)
 
 <img src="materials/illustration.png" width="900">
 
-### What's news
-[2023.05.04] We add a new "PMLP Extensions / Frequent Questions" section summarizing extensions of PMLP and frequently asked questions. We would like to thank the readers who raised questions via email or during the ICLR in-person poster session.
-
-[2023.04.11] We upload the (conference version) slide and add a "Quick Guide" section summarizing four ways to implement PMLP, with discussions of their advantages and limitations.
-
-[2023.02.09] We release the early version of our codes for reproducibility (more detailed info will be updated soon).
 
 ## Table of Contents
 
 - [0. What Could We Do with PMLP](#0-what-could-we-do-with-pmlp)
 - [1. Quick Guide of Implementation](#1-quick-guide-of-implementation)
-  * [Version A (Default): Three models (MLP / PMLP / GNN) in one class](#version-a--three-models--mlp---pmlp---gnn--in-one-class)
-  * [Version B: One line of code is all you need](#version-b--one-line-of-code-is-all-you-need)
-  * [Version C: Just drop all edges](#version-c--just-drop-all-edges--but-leave-self-loops-alone-)
-  * [Version D: Load pretrained MLP](#version-d--load-pretrained-mlp)
+  * [Version A](#version-a--three-models--mlp---pmlp---gnn--in-one-class)
+  * [Version B](#version-b--one-line-of-code-is-all-you-need)
+  * [Version C](#version-c--just-drop-all-edges--but-leave-self-loops-alone-)
+  * [Version D](#version-d--load-pretrained-mlp)
 - [2. PMLP Extensions and FAQ](#2-pmlp-extensions-and-faq)
   * [Q1. Parameterized message passing layers](#q1-how-to-extend-pmlp-to-gnns-with-parameterized-message-passing---graph-convolution-layers--such-as-gat-)
   * [Q2. Unclear how to disentangle GNN layer into MP and FF](#q2-what-if-it-is-unclear-how-to-disentangle-gnn-layers-into-mp-layers-and-ff-layers-)
