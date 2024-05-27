@@ -12,18 +12,8 @@ Related materials:
 
 - [0. What Could We Do with PMLP](#0-what-could-we-do-with-pmlp)
 - [1. Quick Guide of Implementation](#1-quick-guide-of-implementation)
-  * [Version A](#version-a--three-models--mlp---pmlp---gnn--in-one-class)
-  * [Version B](#version-b--one-line-of-code-is-all-you-need)
-  * [Version C](#version-c--just-drop-all-edges--but-leave-self-loops-alone-)
-  * [Version D](#version-d--load-pretrained-mlp)
 - [2. PMLP Extensions and FAQ](#2-pmlp-extensions-and-faq)
-  * [Q1. Parameterized message passing layers](#q1-how-to-extend-pmlp-to-gnns-with-parameterized-message-passing---graph-convolution-layers--such-as-gat-)
-  * [Q2. Unclear how to disentangle GNN layer into MP and FF](#q2-what-if-it-is-unclear-how-to-disentangle-gnn-layers-into-mp-layers-and-ff-layers-)
-  * [Q3. Transductive / semi-supervised learning](#q3-how-to-extend-pmlp-to-transductive---semi-supervised-learning-)
-  * [Q4. Other tasks: link prediction, graph classification, recommender systems, etc.](#q4-what-about-other-tasks-such-as-link-prediction--graph-classification--recommender-systems--knowledge-graphs--)
-  * [Q5. GNN problems: oversmoothing, heterophily, oversquashing, etc.](#q5-can-pmlp-deal-with-gnn-related-problems-such-as-oversmoothing--heterophily--oversquashing--)
 - [3. Run the Code](#3-run-the-code)
-- [Citation and Contact](#citation-and-contact)
 
 
 ## 0. What Could We Do with PMLP
